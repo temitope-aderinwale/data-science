@@ -1,4 +1,4 @@
-# Importing the libraries
+# Importing the libraries.
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -7,42 +7,42 @@ import pandas as pd
 # PART 1 - Data Preprocessing
 #################################
 
-# Importing the dataset
-# Importing Bank Users DataSet
+# Importing the Dataset.
+# Importing Bank Users DataSet.
 dataset = pd.read_csv('Churn_Modelling.csv') 
 
-# Extract from useful columns from dataset, pick the relevant (for use) as INPUT from column 3 to column 12
+# Extract useful columns from Dataset, Pick the relevant columns as INPUT from column 3 to column 12.
 X = dataset.iloc[:, 3:13].values
 
-# Extract from useful columns from dataset, pick column 13 as desired output
+# Extract useful column from dataset, Pick column 13 as desired output.
 y = dataset.iloc[:, 13].values
 
-# Encoding the Independent Variable
+# Encoding the Independent Variable.
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 
-# Encode (tranform into numbers 0, 1, 2) column GEOGRAPHY(Country) 
+# Encode (tranform into numbers 0, 1, 2) column GEOGRAPHY(Country).
 labelencoder_X_1 = LabelEncoder()
 X[:, 1] = labelencoder_X_1.fit_transform(X[:, 1])
 
-# Encode (tranform into numbers 0, 1) column GENDER) 
+# Encode (tranform into numbers 0, 1) column GENDER).
 labelencoder_X_2 = LabelEncoder()
 X[:, 2] = labelencoder_X_1.fit_transform(X[:, 2])
 
-# Create dummy variables for the Encoded column GEOGRAPHY(Country) i.e., transform the column into three columns of 0 and 1
-# Create dummy variables to avoid dummy variable trap
+# Create dummy variables for the Encoded column GEOGRAPHY(Country) i.e., transform the column into three columns of 0 and 1.
+# Create dummy variables to avoid dummy variable trap.
 onehotencoder = OneHotEncoder(categorical_features = [1])
 X = onehotencoder.fit_transform(X).toarray()
 
-# Remove first column of X to avoid falling into the dummy variable trap
+# Remove first column of X to avoid falling into the dummy variable trap.
 X = X[:, 1:]
 
-# Splitting the dataset into the Training set (0.8) of 10, 000 rows making 8000 and Test set (0.2) of 10, 000 rows making 2000
+# Splitting the dataset into the Training set (0.8) of 10, 000 rows making 8000 and Test set (0.2) of 10, 000 rows making 2000.
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
 
-# Feature Scaling
-# Feature scaling is a method used to normalize the range of independent variables or features of data. In data processing, it is also known as data normalization and is generally performed during the data preprocessing step. 
-# Data Normalization
+# Feature Scaling.
+# Feature scaling is a method used to normalize the range of independent variables or features of data. In data processing, it is also known as data normalization and is generally performed during the data preprocessing step.
+# Data Normalization.
 from sklearn.preprocessing import StandardScaler
 sc = StandardScaler()
 X_train = sc.fit_transform(X_train)
@@ -52,41 +52,41 @@ X_test = sc.transform(X_test)
 # PART 2 - Making the Artificial Neural Network (ANN)
 #################################
 
-# Import Theano library (orderly) as a prerequiste to Importing keras
+# Import Theano library (orderly) as a prerequiste to Importing keras.
 import theano
 
-# Import Keras library and packages
+# Import Keras library and packages.
 import keras
 
-# Import Keras useful libraries SEQUENCIAL - used to initialize the neural network
+# Import Keras useful libraries SEQUENCIAL - used to initialize the neural network.
 from keras.models import Sequential
 
-# Model used to create layers in the ANN
+# Model used to create layers in the ANN.
 from keras.layers import Dense
 
-# Initializing the ANN - i.e., defining it as a sequence of layers
-# CLASSIFIER (an object) of ANN classifier
+# Initializing the ANN - i.e., defining it as a sequence of layers.
+# CLASSIFIER (an object) of ANN classifier.
 classifier = Sequential()
 
-# Adding the input layer and the first hidden layer
-# Layer to be added to the ANN
-# output_dim = 6 (represents the first hidden layer - as the output of the input layer) ( because 11 colums in INPUT + 1 column in OUTPUT making 12, then divided by 2)
-# init='Uniform' - initializes the weights randomly and makes sure the numbers are close to 0 Zero
-# activation = 'relu' - means Rectifier Activation Function
-# input_dim = 11 (representing the input layer)
+# Adding the input layer and the first hidden layer.
+# Layer to be added to the ANN.
+# output_dim = 6 (represents the first hidden layer - as the output of the input layer) ( because 11 colums in INPUT + 1 column in OUTPUT making 12, then divided by 2).
+# init='Uniform' - initializes the weights randomly and makes sure the numbers are close to 0 Zero.
+# activation = 'relu' - means Rectifier Activation Function.
+# input_dim = 11 (representing the input layer).
 classifier.add(Dense(output_dim = 6, init = 'uniform', activation = 'relu', input_dim = 11))
 
-# Adding the second hidden layer
+# Adding the second hidden layer.
 classifier.add(Dense(output_dim = 6, init = 'uniform', activation = 'relu'))
 
 classifier.add(Dense(output_dim = 1, init = 'uniform', activation = 'sigmoid'))
 
-# Compiling the ANN - Basically applying stochastic gradient descent on the whole ANN
-# a sort of algorithm that will find the best weights that will make our neural network the most powerful. So, add the stochastic gradient descent algorithm (the optimizer) - by the name 'adam'
+# Compiling the ANN - Basically applying stochastic gradient descent on the whole ANN.
+# A sort of algorithm that will find the best weights that will make our neural network the most powerful. So, add the stochastic gradient descent algorithm (the optimizer) - by the name 'adam'.
 classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
 
-# Batch size is the number of observations / cycles used to update the weight / adjust the weight
-# Fitting or Fixing our ANN to the training set
+# Batch size is the number of observations / cycles used to update the weight / adjust the weight.
+# Fitting or Fixing our ANN to the training set.
 classifier.fit(X_train, y_train, batch_size = 10, nb_epoch = 100)
 
 #################################
@@ -102,6 +102,6 @@ y_pred = (y_pred > 0.5)
 
 
 # Making the Confusion Matrix
-# Comparing the 1 and 0 generated by ANN to output 1 and 0, so know the amount of wrong predicted
+# Comparing the 1 and 0 generated by ANN to output 1 and 0, to know the number of wrong predictions
 from sklearn.metrics import confusion_matrix
 cm = confusion_matrix(y_test, y_pred)
